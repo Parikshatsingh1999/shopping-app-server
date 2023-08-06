@@ -10,11 +10,17 @@ export async function getSingleProduct(req, res) {
         if (!product) {
             return res.status(401).json({ error: `Product with id - ${productId} not found` });
         }
-        return res.status(200).json(product);
+        const result = {
+            id: product._id,
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            currency: product.currency
+        }
+        return res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: error?.message || "Somthing went wrong" });
     }
-
 }
 
 export async function createProduct(req, res) {
@@ -32,22 +38,18 @@ export async function createProduct(req, res) {
 
 export async function getAllProducts(req, res) {
     try {
-        const products = await ProductModel.find({});
+        let products = await ProductModel.find({});
+        products = products.map(item =>
+        ({
+            id: item._id,
+            title: item.title,
+            description: item.description,
+            price: item.price,
+        })
+        )
         return res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ error: error?.message || "Somthing went wrong" });
-    }
-}
-
-export async function getAllCollectionProducts(collectionId) {
-    if (!collectionId) {
-        return [];
-    }
-    try {
-        const products = await ProductModel.find({ collectionId });
-        return products
-    } catch (error) {
-        return []
     }
 }
 

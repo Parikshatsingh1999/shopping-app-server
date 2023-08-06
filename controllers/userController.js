@@ -14,7 +14,6 @@ export const createUser = async (req, res) => {
     const role = 'user';
     try {
         const userExists = await UserModel.find({ email });
-        console.log(userExists?.length, "exits");
         if (userExists?.length) {
             return res.status(401).json({ error: `User with email - ${email} already exists` });
         }

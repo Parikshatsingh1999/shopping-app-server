@@ -1,9 +1,13 @@
 import { CollectionModel } from "../models/collectionModel.js";
-import { getAllCollectionProducts, deleteAllCollectionProducts } from "./productController.js";
+import { deleteAllCollectionProducts } from "./productController.js";
 
 export async function getAllCollections(req, res) {
     try {
-        const collections = await CollectionModel.find({});
+        let collections = await CollectionModel.find({});
+        collections = collections.map(item => ({
+            id: item._id,
+            title: item.title,
+        }))
         return res.status(200).json(collections);
     } catch (error) {
         return res.status(500).json({ error: error?.message || "somethig went wrong" });
@@ -20,24 +24,6 @@ export async function createCollection(req, res) {
     }
 }
 
-export async function getSingleCollection(req, res) {
-    const collectionId = req.params?.collectionId;
-    if (!collectionId) {
-        return res.status(404).json({ error: "Resource not found" });
-    }
-    try {
-        getCollectionWithProducts(req, res);
-        const collection = await CollectionModel.findById(collectionId);
-        const colProducts = await getAllCollectionProducts(collectionId);
-        const { title, _id } = collection
-        if (!collection) {
-            return res.status(401).json({ error: `collection with id - ${collectionId} not found` });
-        }
-        return res.status(200).json({ title, _id, products: colProducts });
-    } catch (error) {
-        return res.status(500).json({ error: error?.message || "somethig went wrong" });
-    }
-}
 
 export async function getCollectionWithProducts(req, res) {
     const collectionId = req.params?.collectionId;
@@ -45,7 +31,7 @@ export async function getCollectionWithProducts(req, res) {
         return res.status(404).json({ error: "Resource not found" });
     }
     try {
-        const collection = await CollectionModel.aggregate([
+        const collectionList = await CollectionModel.aggregate([
             {
                 $match: {
                     $expr: {
@@ -62,7 +48,22 @@ export async function getCollectionWithProducts(req, res) {
                 }
             }
         ]);
-        return res.status(200).json(collection?.[0] || [])
+        let response = {};
+        if (collectionList?.[0]) {
+            let collection = collectionList[0];
+            response.id = collection._id;
+            response.title = collection.title;
+            response.products = collection.products.map(item =>
+            ({
+                id: item._id,
+                title: item.title,
+                description: item.description,
+                price: item.price,
+                currency: item.currency
+            })
+            )
+        }
+        return res.status(200).json(response)
     } catch (error) {
         return res.status(500).json({ error: error?.message || "somethig went wrong" });
     }

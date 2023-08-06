@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-const productSchema = new mongoose.Schema({
+export const productSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -18,9 +18,6 @@ const productSchema = new mongoose.Schema({
     description: {
         type: String
     },
-    currency: {
-        type: String
-    }
 }, { timestamps: true });
 
 export const ProductModel = mongoose.model("product", productSchema);
