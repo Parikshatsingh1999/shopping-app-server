@@ -1,5 +1,6 @@
 import express from "express";
 import { getSingleProduct, createProduct, getAllProducts, deleteProduct } from "../controllers/productController.js";
+import { uploadFile } from "../controllers/fileUploadController.js";
 
 const ProductRouter = express.Router();
 

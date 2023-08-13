@@ -4,7 +4,7 @@ import { collectionRouter } from "./collectionRoutes.js";
 import { ProductRouter } from "./productRoutes.js";
 import { cartRouter } from "./cartRoutes.js";
 import { userLogin } from "../controllers/signInController.js";
-import { verifyUser, verifyToken } from "../controllers/authController.js";
+import { verifyToken } from "../controllers/authController.js";
 
 const router = express.Router();
 

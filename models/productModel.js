@@ -14,10 +14,17 @@ export const productSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
+        required: true
     },
     description: {
         type: String
     },
+    currency: {
+        type: String
+    },
+    image: {
+        type: String
+    }
 }, { timestamps: true });
 
 export const ProductModel = mongoose.model("product", productSchema);

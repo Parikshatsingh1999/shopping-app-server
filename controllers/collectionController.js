@@ -59,7 +59,8 @@ export async function getCollectionWithProducts(req, res) {
                 title: item.title,
                 description: item.description,
                 price: item.price,
-                currency: item.currency
+                currency: item.currency,
+                image: item.image
             })
             )
         }
