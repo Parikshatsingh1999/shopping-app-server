@@ -5,6 +5,9 @@ const collectionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String
+    }
 }, { timestamps: true });
 
 export const CollectionModel = mongoose.model("collection", collectionSchema);

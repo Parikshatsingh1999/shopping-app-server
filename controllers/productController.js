@@ -61,7 +61,7 @@ export async function createProduct(req, res) {
 
 export async function getAllProducts(req, res) {
     try {
-        let products = await ProductModel.find({});
+        let products = await ProductModel.find({}).sort({ "createdAt": -1 });;
         products = products.map(item =>
         ({
             id: item._id,

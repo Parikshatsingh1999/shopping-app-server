@@ -1,14 +1,15 @@
 import express from "express";
 import { getSingleProduct, createProduct, getAllProducts, deleteProduct } from "../controllers/productController.js";
-import { uploadFile } from "../controllers/fileUploadController.js";
+import { verifyToken, verifyIsAdmin } from "../controllers/authController.js";
 
 const ProductRouter = express.Router();
 
-ProductRouter.route("/").post(createProduct)
+ProductRouter.route("/").post(verifyToken, verifyIsAdmin, createProduct)
 
-ProductRouter.route("/all").get(getAllProducts)
+ProductRouter.route("/all").get(verifyToken, getAllProducts)
 
-ProductRouter.route("/:productId").get(getSingleProduct).delete(deleteProduct);
-
+ProductRouter.route("/:productId")
+    .get(getSingleProduct)
+    .delete(verifyToken, verifyIsAdmin, deleteProduct);
 
 export { ProductRouter };

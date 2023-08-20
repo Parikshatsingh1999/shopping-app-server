@@ -3,7 +3,7 @@ import { deleteAllCollectionProducts } from "./productController.js";
 
 export async function getAllCollections(req, res) {
     try {
-        let collections = await CollectionModel.find({});
+        let collections = await CollectionModel.find({}).sort({ "createdAt": -1 });;
         collections = collections.map(item => ({
             id: item._id,
             title: item.title,
@@ -15,9 +15,9 @@ export async function getAllCollections(req, res) {
 }
 
 export async function createCollection(req, res) {
-    const { title } = req.body;
+    const { title, description } = req.body;
     try {
-        const newCollection = await CollectionModel.create({ title });
+        const newCollection = await CollectionModel.create({ title, description });
         return res.status(200).json({ success: "collection created", id: newCollection.id });
     } catch (error) {
         return res.status(500).json({ error: error?.message || "somethig went wrong" });
@@ -44,9 +44,16 @@ export async function getCollectionWithProducts(req, res) {
                     from: 'products',
                     localField: '_id',
                     foreignField: 'collectionId',
-                    as: 'products'
-                }
-            }
+                    as: 'products',
+                    pipeline: [
+                        {
+                            $sort: {
+                                createdAt: -1
+                            }
+                        },
+                    ]
+                },
+            },
         ]);
         let response = {};
         if (collectionList?.[0]) {

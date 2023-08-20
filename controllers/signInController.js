@@ -1,5 +1,6 @@
 import { UserModel } from "../models/userModel.js";
-import { createToken } from "./authController.js"
+import { createToken, createRefreshToken } from "./authController.js"
+
 
 export async function userLogin(req, res) {
     const { email, password } = req.body;
@@ -10,6 +11,12 @@ export async function userLogin(req, res) {
         const user = await UserModel.findOne({ email, password });
         if (user?._id) {
             const token = createToken({ id: user._id, username: user.email, role: user.role });
+            const refreshToken = createRefreshToken({ id: user._id, username: user.email, role: user.role })
+            res.cookie("refreshToken", `Bearer${refreshToken}`, {
+                secure: true,
+                httpOnly: true,
+                maxAge: 7 * 24 * 60 * 60
+            });
             return res.status(200).json({ accessToken: token });
         }
         return res.status(401).json({ error: "User not found" });
@@ -17,3 +24,8 @@ export async function userLogin(req, res) {
         return res.status(500).json({ error: error?.message || "Something went wrong" });
     }
 }
+
+export const userLogout = async (req, res) => {
+    res.status(200).json({ success: "Successfully logged out" });
+}
+

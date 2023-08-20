@@ -3,12 +3,18 @@ import { UserRouter } from "./userRoutes.js";
 import { collectionRouter } from "./collectionRoutes.js";
 import { ProductRouter } from "./productRoutes.js";
 import { cartRouter } from "./cartRoutes.js";
-import { userLogin } from "../controllers/signInController.js";
-import { verifyToken } from "../controllers/authController.js";
+import { authRouter } from "./authRouter.js";
+import { userLogin, userLogout } from "../controllers/signInController.js";
+import { verifyToken, verifyIsAdmin } from "../controllers/authController.js";
 
 const router = express.Router();
 
+
 router.route("/login").post(userLogin);
+
+router.route('/logout').post(verifyToken, userLogout)
+
+router.use("/auth", verifyToken, authRouter)
 
 router.use("/users", UserRouter)
 
